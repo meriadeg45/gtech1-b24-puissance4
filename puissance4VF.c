@@ -11,7 +11,7 @@ char token[] = "ox";
 char player_1[20];
 char player_2[20];
 char tab[NBL][NBC];
-bool end = false;             //Défini les valeurs du tableau.
+bool isThereAWinner = false;             //Défini les valeurs du tableau.
 
 void flushstdin() {
   int c;
@@ -64,7 +64,7 @@ void winVert(int player)
 	for(int x=0; x<NBL-3; x++)
 	 {for(int y=0; y<NBC; y++)
 	{if (tab[x][y] == token [player] && tab[x+1][y] == token[player] && tab [x+2][y] == token [player] && tab [x+3][y] == token [player]){
-	end=true;
+	isThereAWinner=true;
 }
 }
 }
@@ -73,7 +73,7 @@ void winHorz(int player)
 {	for(int x=0; x<NBL; x++)
 {	for(int y=0; y<NBC-3; y++)
 {	if (tab[x][y] == token [player] && tab[x][y+1] == token[player] && tab [x][y+2] == token [player] && tab [x][y+3] == token [player])
-{	end=true;
+{	isThereAWinner=true;
 }
 }
 }
@@ -82,7 +82,7 @@ void winDiag(int player)
 {	for(int x=0; x<NBL-3; x++)
 {	for(int y=0; y<NBC-3; y++)
 {	if (tab [x][y] == token [player] && tab [x+1][y+1] == token [player] && tab [x+2][y+2] == token [player] && tab [x+3][y+3] == token[player])
-{	end=true;}
+{	isThereAWinner=true;}
 {	
 }
 }
@@ -92,11 +92,18 @@ void winDiag1(int player)
 {	for(int x=0; x<NBL; x++)
 {	for(int y=0; y<NBC; y++)
 {	if(tab [x][y] == token [player] &&  tab [x+1][y-1] == token[player] && tab [x+2][y-2] == token[player] && tab[x+3][y-3] == token[player])
-{	end=true;
+{	isThereAWinner=true;
 }
 }
 }
 }
+void victorytest(int player){
+winVert(player);
+winHorz(player);
+winDiag(player);
+winDiag1(player);
+}
+
 
 void game(void) {
     
@@ -114,7 +121,7 @@ void game(void) {
 
 print_tab();
 
-  while(!end) {
+  while(!isThereAWinner) {
 
     printf("[%c] Où voulez placer votre jeton ?", token[player]);
  	int isError = scanf("%d", &player_choose);
@@ -138,10 +145,7 @@ print_tab();
 			break;
 		}
 		else {
-			winVert(player);
-			winHorz(player);
-			winDiag(player);
-			winDiag1(player);
+			victorytest(player);
 			player = !player;
 		}
 	}
@@ -153,8 +157,18 @@ print_tab();
 	}
   }
 
-	}
 
+  if(isThereAWinner){
+    if(player == 1){
+      printf("%s gagne\n", player_1);
+    }else{
+      printf("%s gagne\n", player_2);
+    }
+  }
+  else{
+    printf("Match nul\n");
+  }
+}
 
 void main(void){
   game();
